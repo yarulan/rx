@@ -27,9 +27,9 @@ class Expr[T](val evalFun: () => T) extends Rx[T] {
   }
 
   private[rx] def subscribeTo[U](rx: Rx[U]) {
-    val subscription = rx.onChange { _ =>
+    val subscription = rx.onChange(this , _ => {
       evaluateValue()
-    }
+    })
     subscriptions.add(subscription)
   }
 }

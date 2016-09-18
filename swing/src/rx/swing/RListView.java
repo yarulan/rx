@@ -28,7 +28,7 @@ public class RListView<T, U> extends RComponent<JList<U>> {
             for (int i = 0; i < e.addedItems.size(); i++) {
                 Rx<U> rx = f.apply(e.addedItems.get(i));
                 listModel.add(e.additionPosition + i, rx.getValue());
-                Subscription<ValueChangeEvent<U>> subscription = rx.onChange(e1 -> listModel.set(e.additionPosition, e1.value));
+                Subscription<ValueChangeEvent<U>> subscription = rx.onChange(this, e1 -> listModel.set(e.additionPosition, e1.value));
                 subscriptions.add(e.additionPosition + i, subscription);
             }
         });

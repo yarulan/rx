@@ -12,6 +12,6 @@ public class RLabel extends RComponent<JLabel> {
         super(new JLabel());
         this.text = text;
         component.setText(text.getValue());
-        text.onChange(e -> component.setText(e.value));
+        text.onChange(this, e -> component.setText(e.value));
     }
 }

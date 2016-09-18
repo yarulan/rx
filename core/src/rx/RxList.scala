@@ -25,17 +25,17 @@ abstract class RxList[T] extends Publisher[ListChangeEvent[T]] {
 
   lazy val size: Rx[Integer] = {
     val size = Var(new Integer(list.size()))
-    onChange { e =>
+    onChange(size, e => {
       size := new Integer(list.size())
-    }
+    })
     size
   }
 
   lazy val first: Rx[Option[T]] = {
     val first = Var(if (list.isEmpty) None else Some(list.get(0)))
-    onChange { e =>
+    onChange(first, e => {
       first := (if (list.isEmpty) None else Some(list.get(0)))
-    }
+    })
     first
   }
 

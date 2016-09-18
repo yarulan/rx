@@ -18,7 +18,7 @@ class VarTest extends FunSpec with Matchers {
     it("should trigger change events") {
       val a = Var(2)
       var wasCalled = false
-      a.onChange(e => {
+      a.onChange(this, e => {
         e.value shouldBe 4
         e.oldValue shouldBe 2
         wasCalled = true

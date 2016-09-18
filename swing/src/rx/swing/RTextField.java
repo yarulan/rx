@@ -18,7 +18,7 @@ public class RTextField extends RComponent<JTextField> {
 
         this.text = text;
 
-        text.onChange(e -> {
+        text.onChange(this, e -> {
             if (!inNotification) component.setText(e.value);
         });
 

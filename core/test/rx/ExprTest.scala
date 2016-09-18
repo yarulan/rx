@@ -27,11 +27,11 @@ class ExprTest extends FunSpec with Matchers {
       val a = Var(2)
       val b = Expr { a() }
       var wasCalled = false
-      b.onChange { e => {
+      b.onChange(this, e => {
         e.value shouldBe 4
         e.oldValue shouldBe 2
         wasCalled = true
-      }}
+      })
       a := 4
       wasCalled shouldBe true
     }
