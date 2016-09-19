@@ -18,7 +18,6 @@ class PublisherTest extends FunSpec with Matchers {
       publisher.onChange(this, _ => { listener2WasCalled = true })
 
       System.gc()
-      Thread.sleep(100)
 
       publisher.fireListeners()
 

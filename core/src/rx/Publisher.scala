@@ -1,17 +1,15 @@
 package rx
 
 import java.lang.ref.{ReferenceQueue, WeakReference}
-import java.util.{ArrayList => JavaArrayList}
+import java.util.{ArrayList => JavaArrayList, WeakHashMap}
 import javax.annotation.Nonnull
 
 abstract class Publisher[Event] {
-  private val listeners = new JavaArrayList[(WeakReference[Object], Listener[Event])]()
-
-  private val queue = new ReferenceQueue[Object]()
+  private val listeners = new WeakHashMap[Object, Listener[Event]]()
 
   @Nonnull
   def onChange(subscriber: Object, @Nonnull listener: Listener[Event]): Subscription[Event] = {
-    listeners.add((new WeakReference(subscriber, queue), listener))
+    listeners.put(subscriber, listener)
     new Subscription(this, listener)
   }
 
@@ -24,29 +22,11 @@ abstract class Publisher[Event] {
   }
 
   private[rx] def fireListeners(@Nonnull event: Event): Unit = {
-    cleanupListenersIfNeeded()
-    val listenersDefCopy = new JavaArrayList(listeners)
+    val listenersDefCopy = listeners.values()
     val iterator = listenersDefCopy.iterator()
     while (iterator.hasNext) {
-      val tuple = iterator.next()
-      tuple._2.eventHappened(event)
-    }
-  }
-
-  private def cleanupListenersIfNeeded(): Unit = {
-    var ref = queue.poll()
-    while (ref ne null) {
-      var i = 0
-      var found = false
-      while (i < listeners.size() && !found) {
-        if (listeners.get(i)._1 eq ref) {
-          found = true
-          listeners.remove(i)
-        } else {
-          i += 1
-        }
-      }
-      ref = queue.poll()
+      val listener = iterator.next()
+      listener.eventHappened(event)
     }
   }
 

@@ -19,7 +19,7 @@ public class RListView<T, U> extends RComponent<JList<U>> {
         super(new JList<U>());
         component.setModel(listModel);
         this.list = list;
-        list.onChange(true, e -> {
+        list.onChange(this, true, e -> {
             for (int i = 0; i < e.removedItems.size(); i++) {
                 listModel.remove(e.removalPosition);
                 subscriptions.get(e.removalPosition).end();
