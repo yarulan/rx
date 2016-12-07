@@ -1,27 +1,28 @@
 package rx
 
-import java.lang.ref.{ReferenceQueue, WeakReference}
-import java.util.{ArrayList => JavaArrayList, WeakHashMap}
-import javax.annotation.Nonnull
+import java.util
 
-abstract class Publisher[Event] {
-  private val listeners = new WeakHashMap[Object, Listener[Event]]()
+trait Publisher[T] {
+  def onChange(subscriber: Any, listener: Listener[T]): Subscription
 
-  @Nonnull
-  def onChange(subscriber: Object, @Nonnull listener: Listener[Event]): Subscription[Event] = {
-    listeners.put(subscriber, listener)
-    new Subscription(this, listener)
-  }
-
-  @Nonnull
-  def onChange(subscriber: Object, @Nonnull fireInitialEvent: Boolean, @Nonnull listener: Listener[Event]): Subscription[Event] = {
-    if (fireInitialEvent) {
-      listener.eventHappened(createInitialEvent())
-    }
+  def onChange(listener: Listener[T])(implicit subscriber: Subscriber): Subscription = {
     onChange(subscriber, listener)
   }
+}
 
-  private[rx] def fireListeners(@Nonnull event: Event): Unit = {
+trait PublisherImpl[T] extends Publisher[T] {
+  private val listeners = new util.WeakHashMap[Any, Listener[T]]()
+
+  override def onChange(subscriber: Any, listener: Listener[T]): Subscription = {
+    listeners.put(subscriber, listener)
+    new Subscription {
+      override def end(): Unit = {
+        removeListener(listener)
+      }
+    }
+  }
+
+  protected def fireListeners(event: T): Unit = {
     val listenersDefCopy = listeners.values()
     val iterator = listenersDefCopy.iterator()
     while (iterator.hasNext) {
@@ -30,10 +31,7 @@ abstract class Publisher[Event] {
     }
   }
 
-  @Nonnull
-  protected def createInitialEvent(): Event
-
-  private[rx] def removeListener(@Nonnull listener: Listener[Event]): Unit = {
-    listeners.remove(listener)
+  private def removeListener(listener: Listener[T]) = {
+    listeners.values().remove(listener)
   }
 }

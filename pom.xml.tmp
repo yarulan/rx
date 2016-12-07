@@ -12,6 +12,7 @@
         <module>kotlin</module>
         <module>swing</module>
         <module>scala-runtime</module>
+        <module>scala-library</module>
     </modules>
 
     <properties>
@@ -25,12 +26,12 @@
             <dependency>
                 <groupId>pro.ulan.rx</groupId>
                 <artifactId>core</artifactId>
-                <version>0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>pro.ulan.rx</groupId>
                 <artifactId>scala-runtime</artifactId>
-                <version>0.1-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -152,6 +153,21 @@
                             </goals>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>1.5.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>2.10</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>1.12</version>
                 </plugin>
             </plugins>
         </pluginManagement>

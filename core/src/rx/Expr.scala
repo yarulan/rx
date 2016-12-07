@@ -2,8 +2,8 @@ package rx
 
 import java.util.{ArrayList => JavaArrayList, List => JavaList}
 
-class Expr[T](val evalFun: () => T) extends Rx[T] {
-  private val subscriptions = new JavaArrayList[Subscription[_]]()
+class Expr[T](val evalFun: () => T) extends VarRx[T] {
+  private val subscriptions = new JavaArrayList[Subscription]()
 
   evaluateValue()
 
@@ -20,13 +20,13 @@ class Expr[T](val evalFun: () => T) extends Rx[T] {
     unsubscribeFromAll()
     val oldEnclosingExpr = Expr.enclosingExpr.get()
     Expr.enclosingExpr.set(this)
-    val oldValue = value
-    value = evalFun()
+    val oldValue = _value
+    _value = evalFun()
     Expr.enclosingExpr.set(oldEnclosingExpr)
-    fireListeners(new ValueChangeEvent[T](value, oldValue))
+    fireListeners(new ValueChangeEvent[T](_value, oldValue))
   }
 
-  private[rx] def subscribeTo[U](rx: Rx[U]) {
+  private[rx] def subscribeTo[U](rx: VarRx[U]) {
     val subscription = rx.onChange(this , _ => {
       evaluateValue()
     })

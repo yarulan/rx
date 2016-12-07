@@ -1,6 +1,5 @@
 package rx;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,23 +14,23 @@ import java.util.List;
  * This is in java for no-parentheses access to fields from non-scala code.
  */
 public class ListChangeEvent<T> {
-    @Nonnull public final int removalPosition;
-    @Nonnull public final List<T> removedItems;
-    @Nonnull public final int additionPosition;
-    @Nonnull public final List<T> addedItems;
+    public final int removalPosition;
+    public final List<T> removedItems;
+    public final int additionPosition;
+    public final List<T> addedItems;
 
-    public ListChangeEvent(@Nonnull int removalPosition, @Nonnull List<T> removedItems, @Nonnull int additionPosition, @Nonnull List<T> addedItems) {
+    public ListChangeEvent(int removalPosition, List<T> removedItems, int additionPosition, List<T> addedItems) {
         this.removalPosition = removalPosition;
         this.removedItems = removedItems;
         this.additionPosition = additionPosition;
         this.addedItems = addedItems;
     }
 
-    @Nonnull public static <T> ListChangeEvent<T> added(@Nonnull int additionPosition, @Nonnull List<T> addedItems) {
+    public static <T> ListChangeEvent<T> added(int additionPosition, List<T> addedItems) {
         return new ListChangeEvent<T>(0, new ArrayList<T>(0), additionPosition, addedItems);
     }
 
-    @Nonnull public static <T> ListChangeEvent<T> removed(@Nonnull int removalPosition, @Nonnull List<T> removedItems) {
+    public static <T> ListChangeEvent<T> removed(int removalPosition, List<T> removedItems) {
         return new ListChangeEvent<T>(removalPosition, removedItems, 0, new ArrayList<T>(0));
     }
 }

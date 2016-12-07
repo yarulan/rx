@@ -1,4 +1,6 @@
-package rx
+package rx.internal
+
+import rx.{RxList, VarList}
 
 class MappedList[T, U](list: RxList[T], f: T => U) extends VarList[U] {
   ???

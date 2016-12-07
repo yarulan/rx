@@ -1,19 +1,18 @@
 package rx
 
 import java.util.{ArrayList => JavaArrayList, List => JavaList}
-import javax.annotation.Nonnull
 
 class VarList[T] extends RxList[T] {
-  def insert(@Nonnull position: Int, @Nonnull items: JavaList[T]): Unit = {
+  def insert(position: Int, items: JavaList[T]): Unit = {
     list.addAll(position, items)
     fireListeners(ListChangeEvent.added(position, items))
   }
 
-  def add(@Nonnull items: JavaList[T]): Unit = {
+  def add(items: JavaList[T]): Unit = {
     insert(list.size(), items)
   }
 
-  def add(@Nonnull item: T): Unit = {
+  def add(item: T): Unit = {
     val items = new JavaArrayList[T](1)
     items.add(item)
     add(items)
@@ -32,7 +31,7 @@ class VarList[T] extends RxList[T] {
     fireListeners(new ListChangeEvent[T](0, oldItems, 0, newItems))
   }
 
-  def remove(@Nonnull items: JavaList[T]): Unit = {
+  def remove(items: JavaList[T]): Unit = {
     var i = 0
     while (i < items.size()) {
       remove(items.get(i))
@@ -40,7 +39,7 @@ class VarList[T] extends RxList[T] {
     }
   }
 
-  def remove(@Nonnull item: T): Unit = {
+  def remove(item: T): Unit = {
     val index = list.indexOf(item)
     list.remove(index)
     val items = new JavaArrayList[T](1)

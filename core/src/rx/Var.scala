@@ -1,39 +1,34 @@
 package rx
 
-class Var[T](initialValue: T) extends Rx[T] {
-  value = initialValue
+class Var[T](initialValue: T) extends VarRx[T] {
+  private var subscription: Option[Subscription] = None
+  _value = initialValue
 
   protected def setValue(newValue: T): Unit = {
-    val oldValue = value
-    value = newValue
-    fireListeners(new ValueChangeEvent(newValue, oldValue))
+    val oldValue = _value
+    _value = newValue
+    fireListeners(ValueChangeEvent(newValue, oldValue))
   }
 
-  /**
-    * Scala API.
-    */
-  def apply(newValue: T): Unit = {
-    setValue(newValue)
+  private def unsubscribe(): Unit = {
+    subscription.foreach(_.end())
   }
 
-  /**
-    * Scala API.
-    */
   def :=(newValue: T): Unit = {
+    unsubscribe()
     setValue(newValue)
   }
 
-  /**
-    * Kotlin API.
-    */
-  def invoke(newValue: T): Unit = {
-    setValue(newValue)
+  def :=(expr: Rx[T]): Unit = {
+    unsubscribe()
+    val s = expr.onChange(this, true, e => setValue(e.value))
+    subscription = Some(s)
   }
 
   override def toString: String = {
     val builder = new java.lang.StringBuilder
     builder.append("Var(")
-    builder.append(value.toString)
+    builder.append(_value.toString)
     builder.append(")")
     builder.toString
   }
