@@ -1,13 +1,13 @@
 package rx.internal
 
-import rx.{VarRx, ValueChangeEvent}
+import rx.{Rx, ValueChangeEvent, VarRx}
 
-class MappedRx[T, U](that: VarRx[T], f: T => U) extends VarRx[U] {
+class MappedRx[T, U](that: Rx[T], f: T => U) extends VarRx[U] {
   _value = f(that.value)
 
   that.onChange(this, e => {
     val oldValue = _value
     _value = f(e.value)
-    fireListeners(new ValueChangeEvent(_value, oldValue))
+    fireListeners(ValueChangeEvent(_value, oldValue))
   })
 }

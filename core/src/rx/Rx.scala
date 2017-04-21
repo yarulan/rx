@@ -1,5 +1,7 @@
 package rx
 
+import rx.internal.MappedRx
+
 trait Rx[T] extends Publisher[ValueChangeEvent[T]] with RxOps[T] {
   def apply(): T
   def value: T
@@ -12,4 +14,6 @@ trait RxOps[T] {
   override def onChange(subscriber: Any, listener: Listener[ValueChangeEvent[T]]): Subscription = {
     onChange(subscriber, false, listener)
   }
+
+  def map[U](f: T => U): Rx[U] = new MappedRx(this, f)
 }
